@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "369517578262",
+    "firebase_url": "https://emdadb2b-default-rtdb.firebaseio.com",
+    "project_id": "emdadb2b",
+    "storage_bucket": "emdadb2b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:369517578262:android:3edd7a6eec10045398cd37",
+        "android_client_info": {
+          "package_name": "com.emdad.yemenb2b"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "369517578262-41c446om0b7dl55pj0arq5ej18nossti.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.emdad.yemenb2b",
+            "certificate_hash": "8da01dd5bbe173064733a69a26c68dc869a71e7f"
+          }
+        },
+        {
+          "client_id": "369517578262-0sfppnjqia3oce0e8libk38c9cn0v8vd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB0kWyqAxUGrT9SMVoKIxPjNTeqGsZr5NE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "369517578262-0sfppnjqia3oce0e8libk38c9cn0v8vd.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

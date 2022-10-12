@@ -1,0 +1,96 @@
+import 'package:connectivity/connectivity.dart';
+import 'package:emdad/view/basewidget/button/custom_button.dart';
+import 'package:emdad/view/basewidget/show_custom_snakbar.dart';
+import 'package:emdad/view/screen/requstOrder/order_bottom_sheet.dart';
+import 'package:flutter/material.dart';
+import 'package:emdad/localization/language_constrants.dart';
+import 'package:emdad/utility/color_resources.dart';
+import 'package:emdad/utility/custom_themes.dart';
+import 'package:emdad/utility/dimensions.dart';
+import 'package:emdad/utility/images.dart';
+
+class NoInternetOrDataScreen extends StatelessWidget {
+  final bool isNoInternet;
+  final Widget child;
+  NoInternetOrDataScreen({@required this.isNoInternet, this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.all(MediaQuery.of(context).size.height*0.025),
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.asset(isNoInternet ? Images.no_internet : Images.no_data, width: 150, height: 150),
+           /*
+            Text(isNoInternet ? getTranslated('OPPS', context) : getTranslated('sorry', context), style: titilliumBold.copyWith(
+              fontSize: 30,
+              color: isNoInternet ? Theme.of(context).textTheme.bodyText1.color : ColorResources.getColombiaBlue(context),
+            )),
+
+            */
+            SizedBox(height: Dimensions.PADDING_SIZE_EXTRA_SMALL),
+            Text(
+              isNoInternet ? getTranslated('no_internet_connection', context) : 'إذا لم تجد المنتج الذي تبحث عنة',
+              textAlign: TextAlign.center,
+              style: titilliumBold.copyWith(
+                fontSize: 12,
+                color: ColorResources.COLOR_NERO,
+              )
+            ),
+            SizedBox(height: Dimensions.PADDING_SIZE_EXTRA_SMALL),
+            SizedBox(height: Dimensions.PADDING_SIZE_EXTRA_SMALL),
+             CustomButton(
+                  buttonText: 'اطلب منتجك الأن',
+                  onTap: () {
+                    showModalBottomSheet(context: context, isScrollControlled: true, backgroundColor: Colors.transparent, builder: (con) => OrderBottomSheet(callback: (){
+                      showCustomSnackBar(getTranslated('added_to_cart', context), context, isError: false);
+                    },));
+                  }),
+          /*
+          OutlinedButton(
+              onPressed: () {
+                showModalBottomSheet(context: context, isScrollControlled: true, backgroundColor: Colors.transparent, builder: (con) => OrderBottomSheet(callback: (){
+                  showCustomSnackBar(getTranslated('added_to_cart', context), context, isError: false);
+                },));
+              },
+              child: Container(
+                  alignment: Alignment.center,
+                  height: 60,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(30),
+                    color: ColorResources.primaryColor.withOpacity(0.8),
+                  ),
+                  child: Text('اطلب منتجك الأن',
+                      style: robotoRegular.copyWith(color: ColorResources.getTextTitle(context))
+                  )
+              ),
+            ),
+           */
+
+            SizedBox(height: 40),
+            isNoInternet ? Container(
+              height: 45,
+              margin: EdgeInsets.symmetric(horizontal: 40),
+              decoration: BoxDecoration(borderRadius: BorderRadius.circular(5), color: ColorResources.getYellow(context)),
+              child: TextButton(
+                onPressed: () async {
+                  if(await Connectivity().checkConnectivity() != ConnectivityResult.none) {
+                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => child));
+                  }
+                },
+                child: Container(
+                  width: double.infinity,
+                  alignment: Alignment.center,
+                  child: Text(getTranslated('RETRY', context), style: titilliumSemiBold.copyWith(color: Theme.of(context).highlightColor, fontSize: Dimensions.FONT_SIZE_LARGE)),
+                ),
+              ),
+            ) : SizedBox.shrink(),
+
+          ],
+        ),
+      ),
+    );
+  }
+}
