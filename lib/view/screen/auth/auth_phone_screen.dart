@@ -7,7 +7,7 @@ import 'package:emdad/view/screen/auth/widget/otp_verification_screen.dart';
 import 'package:emdad/view/screen/tread_info/auth_header_widget.dart';
 import 'package:emdad/view/screen/dashboard/dashboard_screen.dart';
 import 'package:flutter/material.dart';
-
+import 'package:flutter/gestures.dart';
 import 'package:emdad/localization/language_constrants.dart';
 import 'package:emdad/provider/auth_provider.dart';
 import 'package:emdad/provider/profile_provider.dart';
@@ -17,6 +17,8 @@ import 'package:emdad/utility/custom_themes.dart';
 import 'package:emdad/utility/dimensions.dart';
 import 'package:emdad/utility/images.dart';
 import 'package:provider/provider.dart';
+
+import '../more/widget/html_view_Screen.dart';
 //import 'package:getwidget/getwidget.dart';
 class AuthPhoneScreen extends StatefulWidget{
   final int initialPage;
@@ -175,7 +177,61 @@ class _AuthPhoneScreenState extends State<AuthPhoneScreen> {
                           value: true,
                         ),
                       ),
-                    Text("الموافقه علي شروط الأستخدام و سياسه الخصوصيه"),
+                   RichText(
+                       text:TextSpan(text: " الموافقه علي ",  style: TextStyle(color: Colors.black),
+                           children: [
+
+                         TextSpan(text: "  شروط الأستخدام ",
+                           style: const TextStyle(
+                             color: Colors.blue,
+                             decoration: TextDecoration.underline,
+                           ),
+                           recognizer: TapGestureRecognizer()
+                             ..onTap = () => Navigator.push(
+                               context,
+                               /*PageRouteBuilder(
+            transitionDuration: Duration(seconds: 1),
+            pageBuilder: (context, animation, secondaryAnimation) => navigateTo,
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              animation = CurvedAnimation(parent: animation, curve: Curves.bounceInOut);
+              return ScaleTransition(scale: animation, child: child, alignment: Alignment.center);
+            },
+          ),*/
+                               MaterialPageRoute(builder: (_) => HtmlViewScreen(
+                                 title: getTranslated('terms_condition', context),
+                                 url: Provider.of<SplashProvider>(context, listen: false).configModel.termsConditions,
+                               )),
+                             ),
+                         ),
+                         TextSpan(text: "و",  style: TextStyle(color: Colors.black),),
+                         TextSpan(text: "سياسه الخصوصيه ", style: const TextStyle(
+                           color: Colors.blue,
+                           decoration: TextDecoration.underline,
+                         ),
+                           recognizer: TapGestureRecognizer()
+                             ..onTap = () => Navigator.push(
+                               context,
+                               /*PageRouteBuilder(
+            transitionDuration: Duration(seconds: 1),
+            pageBuilder: (context, animation, secondaryAnimation) => navigateTo,
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              animation = CurvedAnimation(parent: animation, curve: Curves.bounceInOut);
+              return ScaleTransition(scale: animation, child: child, alignment: Alignment.center);
+            },
+          ),*/
+                               MaterialPageRoute(builder: (_) => HtmlViewScreen(
+                                 title: getTranslated('privacy_policy', context),
+                                 url: Provider.of<SplashProvider>(context, listen: false).configModel.termsConditions,
+                               )),
+                             ),
+                         ),
+
+                       ]),
+
+
+
+
+                   ),
                     ],
 
                   ),
