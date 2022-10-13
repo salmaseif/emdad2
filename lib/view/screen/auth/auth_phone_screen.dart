@@ -6,6 +6,7 @@ import 'package:emdad/view/screen/auth/widget/code_picker_widget.dart';
 import 'package:emdad/view/screen/auth/widget/otp_verification_screen.dart';
 import 'package:emdad/view/screen/tread_info/auth_header_widget.dart';
 import 'package:emdad/view/screen/dashboard/dashboard_screen.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:emdad/localization/language_constrants.dart';
@@ -16,6 +17,7 @@ import 'package:emdad/utility/color_resources.dart';
 import 'package:emdad/utility/custom_themes.dart';
 import 'package:emdad/utility/dimensions.dart';
 import 'package:emdad/utility/images.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import '../more/widget/html_view_Screen.dart';
@@ -29,6 +31,7 @@ class AuthPhoneScreen extends StatefulWidget{
 }
 
 class _AuthPhoneScreenState extends State<AuthPhoneScreen> {
+  bool isprivacychecked=false;
   TextEditingController _phoneController = TextEditingController();
   FocusNode _phoneFocus = FocusNode();
 
@@ -58,7 +61,14 @@ class _AuthPhoneScreenState extends State<AuthPhoneScreen> {
 
 
   void loginUser() async {
-    if (_phoneController.text.length > 8) {
+    if(isprivacychecked==false)
+      {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text("يجب ان توافق علي شروط الأستخدام و سياسه الخصوصيه للمتابعه"),
+          backgroundColor: Colors.red,
+        ));
+      }
+     else if (_phoneController.text.length > 8) {
       String _phone = _countryDialCode+_phoneController.text.trim();
       Provider.of<AuthProvider>(context, listen: false).updateRemember(true);
       if (Provider.of<AuthProvider>(context, listen: false).isRemember) {
@@ -109,12 +119,18 @@ class _AuthPhoneScreenState extends State<AuthPhoneScreen> {
           Consumer<AuthProvider>(
             builder: (context, auth, child) => SafeArea(
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SizedBox(height: 30),
                   // for logo with text
-                  Image.asset(Images.logo_with_name_image, height: 150, width: 200),
-                  authHeaderWidget(context: context, title: "كم رقم جوالك؟", subTitle: "إدخل رقم جوالك عشان نرسل لك كود التفعيل"),
+                  Padding(
+                    padding: EdgeInsets.all(Dimensions.MARGIN_SIZE_SMALL),
+                    child: Image.asset(Images.logo_with_name_image, height: 150, width: 200),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(right: 25),
+                    child: authHeaderWidget(context: context, title: "ايش رقم جوالك؟", subTitle: "إدخل رقم جوالك عشان نرسل لك كود التفعيل"),
+                  ),
                   // for decision making section like sign in or register section
                   Padding(
                     padding: EdgeInsets.all(Dimensions.MARGIN_SIZE_SMALL),
@@ -122,9 +138,11 @@ class _AuthPhoneScreenState extends State<AuthPhoneScreen> {
                       clipBehavior: Clip.none,
                       children: [
                         Container(
+                          height:75,
                           margin: EdgeInsets.all(Dimensions.MARGIN_SIZE_DEFAULT),
                           child: Row(children: [
                             Expanded(
+                              flex:2,
                                 child: TextField(
                                   controller: _phoneController,
                                   textDirection: TextDirection.ltr,
@@ -133,29 +151,45 @@ class _AuthPhoneScreenState extends State<AuthPhoneScreen> {
                                   autofocus: true,
                                   maxLength: 10,
 
+                                 // maxLengthEnforcement: MaxLengthEnforcement.enforced,
+
                                   decoration: InputDecoration(
                                       hintText: 'ادخل رقم تلفونك',
-                                      border: InputBorder.none,
+
                                       hintStyle: titilliumRegular.copyWith(color: ColorResources.GAINS_BORO),
                                         contentPadding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 15),
                                         isDense: true,
                                         filled: true,
                                         fillColor: Theme.of(context).highlightColor,
-                                        focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Theme.of(context).primaryColor)),
+                                       focusedBorder: OutlineInputBorder(
+                                           borderRadius: BorderRadius.circular(30.0),
+                                           borderSide: BorderSide(color: Theme.of(context).primaryColor)),
                                   ),
                             ),
                             ),
-                            CodePickerWidget(
-                              onChanged: (CountryCode countryCode) {
-                                _countryDialCode = countryCode.dialCode;
-                              },
-                              initialSelection: _countryDialCode,
-                              favorite: [_countryDialCode],
-                              showDropDownButton: true,
-                              padding: EdgeInsets.zero,
-                              showFlagMain: true,
-                              textStyle: TextStyle(color: Theme.of(context).textTheme.headline1.color),
+                            SizedBox(width: 10,),
+                            Expanded(
+                              child: Container(
+                                margin: EdgeInsets.only(bottom: 14),
+                                    width: 110,
+                                height: 50,
+                                decoration: BoxDecoration(border: Border.all(
+                                    color: Theme.of(context).primaryColor, width: 1),borderRadius:BorderRadius.circular(30.0), ),
+                                child: CodePickerWidget(
+                                  onChanged: (CountryCode countryCode) {
+                                    _countryDialCode = countryCode.dialCode;
+                                  },
+                                  initialSelection: _countryDialCode,
+                                  flagWidth: 20,
+                                  favorite: [_countryDialCode],
+                                  showDropDownButton: true,
+                                  padding: EdgeInsets.zero,
+                                  showFlagMain: true,
 
+                                  textStyle: TextStyle(color: Theme.of(context).textTheme.headline1.color,fontSize: 10,fontWeight: FontWeight.bold),
+
+                                ),
+                              ),
                             ),
                           ]),
                         ),
@@ -163,77 +197,91 @@ class _AuthPhoneScreenState extends State<AuthPhoneScreen> {
                     ),
                   ),
                   // for decision making section like sign in or register section
-                  Row(
-                    children: [
-                      //GFButton(),
-                      Transform.scale(
-                        scale: 1.3,
-                        child: Checkbox(
+                  Padding(
+                    padding: EdgeInsets.all(Dimensions.MARGIN_SIZE_EXTRA_SMALL),
 
-                          fillColor: MaterialStateProperty.all( Theme.of(context).primaryColor),
+                    child: Container(
+                      margin: EdgeInsets.only(left: 20, right: 10, bottom: 20, top: 15),
+                      child: Row(
 
-                          checkColor:Theme.of(context).highlightColor,
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
-                          value: true,
-                        ),
+                        children: [
+                          //GFButton(),
+                          Transform.scale(
+                            scale: 1.1,
+                            child: Checkbox(
+
+                              fillColor: MaterialStateProperty.all( Theme.of(context).primaryColor),
+
+                              checkColor:Theme.of(context).highlightColor,
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+                              value: isprivacychecked,
+                              onChanged: (value){
+                                setState(() {
+                                  isprivacychecked=value;
+                                });
+
+                              },
+                            ),
+                          ),
+                       RichText(
+                           text:TextSpan(text: " الموافقه على ",  style: TextStyle(color: Colors.black),
+                               children: [
+
+                             TextSpan(text: "شروط الأستخدام",
+                               style:  TextStyle(
+                                 color: Theme.of(context).primaryColor,
+                                 decoration: TextDecoration.underline,
+                               ),
+                               recognizer: TapGestureRecognizer()
+                                 ..onTap = () => Navigator.push(
+                                   context,
+                                   /*PageRouteBuilder(
+            transitionDuration: Duration(seconds: 1),
+            pageBuilder: (context, animation, secondaryAnimation) => navigateTo,
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              animation = CurvedAnimation(parent: animation, curve: Curves.bounceInOut);
+              return ScaleTransition(scale: animation, child: child, alignment: Alignment.center);
+            },
+          ),*/
+                                   MaterialPageRoute(builder: (_) => HtmlViewScreen(
+                                     title: getTranslated('terms_condition', context),
+                                     url: Provider.of<SplashProvider>(context, listen: false).configModel.termsConditions,
+                                   )),
+                                 ),
+                             ),
+                             TextSpan(text: " و ",  style: TextStyle(color: Colors.black),),
+                             TextSpan(text: "سياسه الخصوصيه ", style:  TextStyle(
+                               color: Theme.of(context).primaryColor,
+                               decoration: TextDecoration.underline,
+                             ),
+                               recognizer: TapGestureRecognizer()
+                                 ..onTap = () => Navigator.push(
+                                   context,
+                                   /*PageRouteBuilder(
+            transitionDuration: Duration(seconds: 1),
+            pageBuilder: (context, animation, secondaryAnimation) => navigateTo,
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              animation = CurvedAnimation(parent: animation, curve: Curves.bounceInOut);
+              return ScaleTransition(scale: animation, child: child, alignment: Alignment.center);
+            },
+          ),*/
+                                   MaterialPageRoute(builder: (_) => HtmlViewScreen(
+                                     title: getTranslated('privacy_policy', context),
+                                     url: Provider.of<SplashProvider>(context, listen: false).configModel.termsConditions,
+                                   )),
+                                 ),
+                             ),
+
+                           ]),
+
+
+
+
+                       ),
+                        ],
+
                       ),
-                   RichText(
-                       text:TextSpan(text: " الموافقه علي ",  style: TextStyle(color: Colors.black),
-                           children: [
-
-                         TextSpan(text: "  شروط الأستخدام ",
-                           style: const TextStyle(
-                             color: Colors.blue,
-                             decoration: TextDecoration.underline,
-                           ),
-                           recognizer: TapGestureRecognizer()
-                             ..onTap = () => Navigator.push(
-                               context,
-                               /*PageRouteBuilder(
-            transitionDuration: Duration(seconds: 1),
-            pageBuilder: (context, animation, secondaryAnimation) => navigateTo,
-            transitionsBuilder: (context, animation, secondaryAnimation, child) {
-              animation = CurvedAnimation(parent: animation, curve: Curves.bounceInOut);
-              return ScaleTransition(scale: animation, child: child, alignment: Alignment.center);
-            },
-          ),*/
-                               MaterialPageRoute(builder: (_) => HtmlViewScreen(
-                                 title: getTranslated('terms_condition', context),
-                                 url: Provider.of<SplashProvider>(context, listen: false).configModel.termsConditions,
-                               )),
-                             ),
-                         ),
-                         TextSpan(text: "و",  style: TextStyle(color: Colors.black),),
-                         TextSpan(text: "سياسه الخصوصيه ", style: const TextStyle(
-                           color: Colors.blue,
-                           decoration: TextDecoration.underline,
-                         ),
-                           recognizer: TapGestureRecognizer()
-                             ..onTap = () => Navigator.push(
-                               context,
-                               /*PageRouteBuilder(
-            transitionDuration: Duration(seconds: 1),
-            pageBuilder: (context, animation, secondaryAnimation) => navigateTo,
-            transitionsBuilder: (context, animation, secondaryAnimation, child) {
-              animation = CurvedAnimation(parent: animation, curve: Curves.bounceInOut);
-              return ScaleTransition(scale: animation, child: child, alignment: Alignment.center);
-            },
-          ),*/
-                               MaterialPageRoute(builder: (_) => HtmlViewScreen(
-                                 title: getTranslated('privacy_policy', context),
-                                 url: Provider.of<SplashProvider>(context, listen: false).configModel.termsConditions,
-                               )),
-                             ),
-                         ),
-
-                       ]),
-
-
-
-
-                   ),
-                    ],
-
+                    ),
                   ),
                   Padding(
                     padding: EdgeInsets.all(Dimensions.MARGIN_SIZE_EXTRA_SMALL),

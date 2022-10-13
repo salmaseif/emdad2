@@ -18,6 +18,7 @@ class CustomButton extends StatelessWidget {
       child: Container(
         height: 45,
         alignment: Alignment.center,
+
         decoration: BoxDecoration(
           color: ColorResources.getChatIcon(context),
             boxShadow: [
@@ -34,7 +35,9 @@ class CustomButton extends StatelessWidget {
               Theme.of(context).primaryColor,
               Theme.of(context).primaryColor,
             ]),
-            borderRadius: BorderRadius.circular(10)),
+        border: Border.all(
+            color: Theme.of(context).primaryColor, width: 1),
+            borderRadius: BorderRadius.circular(30.0),),
         child: Text(buttonText,
             style: titilliumSemiBold.copyWith(
               fontSize: 16,
